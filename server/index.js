@@ -11,10 +11,12 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 require("./services/passport");
 
 app.prepare().then(() => {
   const server = express();
+  server.use(express.json());
 
   // server.get("/a", (req, res) => {
   //   return app.render(req, res, "/a", req.query);
@@ -35,6 +37,7 @@ app.prepare().then(() => {
   server.use(passport.session());
 
   server.use(authRouter);
+  server.use(userRouter);
 
   server.all("*", (req, res) => {
     return handle(req, res);
