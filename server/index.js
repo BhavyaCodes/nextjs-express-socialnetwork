@@ -8,16 +8,20 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
+const authRouter = require("./routes/auth");
+
 app.prepare().then(() => {
   const server = express();
 
-  server.get("/a", (req, res) => {
-    return app.render(req, res, "/a", req.query);
-  });
+  // server.get("/a", (req, res) => {
+  //   return app.render(req, res, "/a", req.query);
+  // });
 
-  server.get("/b", (req, res) => {
-    return app.render(req, res, "/b", req.query);
-  });
+  // server.get("/b", (req, res) => {
+  //   return app.render(req, res, "/b", req.query);
+  // });
+
+  server.use(authRouter);
 
   server.all("*", (req, res) => {
     return handle(req, res);
