@@ -1,11 +1,21 @@
+import { useContext } from "react";
+import { UserContext } from "../components/context/user.context";
+
 const Navbar = () => {
+  const user = useContext(UserContext);
+  console.log(user);
   return (
     <div>
       Navbar
-      <div>
-        <a href="/auth/google">Login</a>
-        <a href="/api/logout">Logout</a>
-      </div>
+      {!user.loading && (
+        <div>
+          {user.user ? (
+            <a href="/api/logout">Logout</a>
+          ) : (
+            <a href="/auth/google">Login</a>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -22,6 +22,9 @@ router.get("/api/logout", (req, res) => {
 });
 
 router.get("/api/current_user", (req, res) => {
+  if (!req.user) {
+    return res.status(401).send();
+  }
   res.send(req.user);
 });
 
