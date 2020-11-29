@@ -24,4 +24,13 @@ router.post("/api/newpost", requireLogin, async (req, res, next) => {
   res.status(201).send({ post: savedPost });
 });
 
+router.get("/api/profile/:id", async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.send(user);
+  } catch (error) {
+    res.status(404).send();
+  }
+});
+
 module.exports = router;
