@@ -4,7 +4,7 @@ const User = require("../models/User");
 const requireLogin = require("../middlewares/requireLogin");
 
 router.get("/api/posts", async (req, res, next) => {
-  const posts = await Post.find();
+  const posts = await Post.find().populate("creator");
   res.send({ posts });
 });
 
