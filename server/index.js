@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const next = require("next");
 const mongoose = require("mongoose");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -9,6 +11,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const authRouter = require("./routes/auth");
+require("./services/passport");
 
 app.prepare().then(() => {
   const server = express();
@@ -20,6 +23,16 @@ app.prepare().then(() => {
   // server.get("/b", (req, res) => {
   //   return app.render(req, res, "/b", req.query);
   // });
+
+  server.use(
+    cookieSession({
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      keys: [process.env.COOKIE_KEY],
+    })
+  );
+
+  server.use(passport.initialize());
+  server.use(passport.session());
 
   server.use(authRouter);
 
