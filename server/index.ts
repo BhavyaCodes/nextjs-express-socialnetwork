@@ -1,17 +1,18 @@
-require("dotenv").config();
-const express = require("express");
-const next = require("next");
-const mongoose = require("mongoose");
-const cookieSession = require("cookie-session");
-const passport = require("passport");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import next from "next";
+import mongoose from "mongoose";
+import cookieSession from "cookie-session";
+import passport from "passport";
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const authRouter = require("./routes/auth");
-const userRouter = require("./routes/user");
+import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 require("./services/passport");
 
 app.prepare().then(() => {
@@ -51,8 +52,8 @@ app.prepare().then(() => {
     })
     .then(() => {
       console.log("connected to mongodb");
-      server.listen(port, (err) => {
-        if (err) throw err;
+      server.listen(port, () => {
+        // if (err) throw err;
         console.log(`> Ready on http://localhost:${port}`);
       });
     });
