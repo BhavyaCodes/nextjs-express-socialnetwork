@@ -6,14 +6,14 @@ interface Creator {
   _id: string;
 }
 
-type Post = {
+type PostType = {
   _id: string;
   title: string;
   content: string;
   creator: Creator;
 };
 
-type AppProps = { post: Post };
+type AppProps = { post: PostType };
 
 const Post = ({ post }: AppProps) => {
   return (
@@ -25,6 +25,7 @@ const Post = ({ post }: AppProps) => {
           <p>{post.creator.name}</p>
         </a>
       </Link>
+      <button>Delete</button>
     </div>
   );
 };

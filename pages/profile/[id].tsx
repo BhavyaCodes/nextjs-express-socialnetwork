@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Post from "../../components/Post";
+
+interface Creator {
+  name: string;
+  _id: string;
+}
 
 type Post = {
   title: string;
   content: string;
   _id: string;
+  creator: Creator;
 };
 
 type Profile = {
@@ -42,10 +49,7 @@ const ProfilePage = () => {
 
   const renderPosts = () => {
     return profile.user.posts.map((post) => (
-      <>
-        <h2>{post.title}</h2>
-        <h3>{post.content}</h3>
-      </>
+      <Post post={post} key={post._id} />
     ));
   };
 

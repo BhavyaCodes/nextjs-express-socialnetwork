@@ -38,7 +38,7 @@ export default function Home() {
   };
 
   const renderPosts = () => {
-    return posts.map((post) => <Post post={post} />);
+    return posts.map((post) => <Post key={post._id} post={post} />);
   };
 
   return (

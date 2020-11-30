@@ -13,19 +13,12 @@ const handle = app.getRequestHandler();
 
 import authRouter from "./routes/auth";
 import userRouter from "./routes/user";
+import feedRouter from "./routes/feed";
 require("./services/passport");
 
 app.prepare().then(() => {
   const server = express();
   server.use(express.json());
-
-  // server.get("/a", (req, res) => {
-  //   return app.render(req, res, "/a", req.query);
-  // });
-
-  // server.get("/b", (req, res) => {
-  //   return app.render(req, res, "/b", req.query);
-  // });
 
   server.use(
     cookieSession({
@@ -38,7 +31,8 @@ app.prepare().then(() => {
   server.use(passport.session());
 
   server.use(authRouter);
-  server.use(userRouter);
+  server.use("/api", userRouter);
+  server.use("/api", feedRouter);
 
   server.all("*", (req, res) => {
     return handle(req, res);
