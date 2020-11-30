@@ -26,7 +26,7 @@ router.post("/api/newpost", requireLogin, async (req, res, next) => {
 
 router.get("/api/profile/:id", async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate("posts");
     res.send(user);
   } catch (error) {
     res.status(404).send();
