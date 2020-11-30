@@ -2,10 +2,28 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+type Post = {
+  title: string;
+  content: string;
+  _id: string;
+};
+
+type Profile = {
+  loading: boolean;
+  user: {
+    name: string;
+    imageUrl: string;
+    posts: Post[];
+  } | null;
+};
+
 const ProfilePage = () => {
   const { id } = useRouter().query;
 
-  const [profile, setProfile] = useState({ user: null, loading: true });
+  const [profile, setProfile] = useState<Profile>({
+    user: null,
+    loading: true,
+  });
 
   useEffect(() => {
     if (!id) {

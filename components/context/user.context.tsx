@@ -1,11 +1,21 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
-export const UserContext = createContext();
-export const SetUserContext = createContext();
+export const UserContext = createContext(undefined);
+export const SetUserContext = createContext(undefined);
+
+interface LoggedInUser {
+  loading: boolean;
+  user: {
+    googleId: string;
+    imageUrl: string;
+    name: string;
+    posts: string[];
+  } | null;
+}
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState({ user: null, loading: true });
+  const [user, setUser] = useState<LoggedInUser>({ user: null, loading: true });
 
   useEffect(() => {
     const getUser = async () => {
