@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const passport = require("passport");
+import { Router } from "express";
+const router = Router();
+import passport from "passport";
 
 router.get(
   "/auth/google",
@@ -28,4 +28,4 @@ router.get("/api/current_user", (req, res) => {
   res.send(req.user);
 });
 
-module.exports = router;
+export default router;

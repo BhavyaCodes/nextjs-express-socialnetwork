@@ -1,19 +1,18 @@
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20");
-const mongoose = require("mongoose");
-const User = require("../models/User");
+import { serializeUser, deserializeUser, use } from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import User, { IUser } from "../models/User";
 
-passport.serializeUser((user, done) => {
+serializeUser((user: IUser, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
+deserializeUser((id, done) => {
   User.findById(id).then((user) => {
     done(null, user);
   });
 });
 
-passport.use(
+use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
