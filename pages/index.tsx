@@ -3,6 +3,8 @@ import axios from "axios";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
+import Post from "../components/Post";
+
 export default function Home() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -36,12 +38,7 @@ export default function Home() {
   };
 
   const renderPosts = () => {
-    return posts.map((post) => (
-      <div key={post._id}>
-        <h2>{post.title}</h2>
-        <p>{post.content}</p>
-      </div>
-    ));
+    return posts.map((post) => <Post post={post} />);
   };
 
   return (
