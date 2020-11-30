@@ -1,5 +1,6 @@
 import { FC } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 interface Creator {
   name: string;
@@ -16,6 +17,11 @@ type PostType = {
 type AppProps = { post: PostType };
 
 const Post = ({ post }: AppProps) => {
+  const deletePost = async (id) => {
+    const res = await axios.delete(`/api/deletepost/${id}`);
+    console.log(res);
+  };
+
   return (
     <div>
       <h1>{post.title}</h1>
@@ -25,7 +31,7 @@ const Post = ({ post }: AppProps) => {
           <p>{post.creator.name}</p>
         </a>
       </Link>
-      <button>Delete</button>
+      <button onClick={() => deletePost(post._id)}>Delete</button>
     </div>
   );
 };
