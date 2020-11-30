@@ -1,4 +1,6 @@
 import { FC } from "react";
+import Link from "next/link";
+
 interface Creator {
   name: string;
   _id: string;
@@ -18,7 +20,11 @@ const Post = ({ post }: AppProps) => {
     <div>
       <h1>{post.title}</h1>
       <h3>{post.content}</h3>
-      <p>{post.creator.name}</p>
+      <Link href="/profile/[id]" as={`/profile/${post.creator._id}`}>
+        <a>
+          <p>{post.creator.name}</p>
+        </a>
+      </Link>
     </div>
   );
 };
