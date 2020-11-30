@@ -53,7 +53,6 @@ app.prepare().then(() => {
     .then(() => {
       console.log("connected to mongodb");
       server.listen(port, () => {
-        // if (err) throw err;
         console.log(`> Ready on http://localhost:${port}`);
       });
     });

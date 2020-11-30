@@ -1,12 +1,8 @@
 import { serializeUser, deserializeUser, use } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
 
-interface UserInterface {
-  id: string;
-}
-
-serializeUser((user: UserInterface, done) => {
+serializeUser((user: IUser, done) => {
   done(null, user.id);
 });
 
