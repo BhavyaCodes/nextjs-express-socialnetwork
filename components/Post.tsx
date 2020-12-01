@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { UserContext } from "./context/user.context";
@@ -18,15 +18,22 @@ type PostType = {
 type AppProps = { post: PostType };
 
 const Post = ({ post }: AppProps) => {
+  const [deleted, setDeleted] = useState(false);
   const loggedInUser = useContext(UserContext);
 
   const deletePost = async (id) => {
-    const res = await axios.delete(`/api/deletepost/${id}`);
-    console.log(res);
+    try {
+      const res = await axios.delete(`/api/deletepost/${id}`);
+      setDeleted(true);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  console.log(loggedInUser);
-  console.log(post.creator._id);
+  if (deleted) {
+    return null;
+  }
+
   return (
     <div>
       <h1>{post.title}</h1>

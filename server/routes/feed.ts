@@ -1,5 +1,4 @@
 import { Router, Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 import Post from "../models/Post";
 import User from "../models/User";
 import requireLogin from "../middlewares/requireLogin";
