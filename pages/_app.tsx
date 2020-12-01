@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-// import "../styles/globals.css";
 import Navbar from "../components/Navbar";
 import { UserContextProvider } from "../components/context/user.context";
 
@@ -18,7 +16,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MailIcon from "@material-ui/icons/Mail";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+
 import {
   makeStyles,
   useTheme,
@@ -102,7 +100,6 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <UserContextProvider>
-      {/* <Navbar /> */}
       <CssBaseline />
       <div className={classes.root}>
         <AppBar position="fixed" className={classes.appBar}>
@@ -116,16 +113,13 @@ function MyApp({ Component, pageProps }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              Responsive drawer
-            </Typography>
+            <Navbar />
           </Toolbar>
         </AppBar>
         <nav className={classes.drawer} aria-label="mailbox folders">
           {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <Hidden smUp implementation="css">
             <Drawer
-              // container={container}
               variant="temporary"
               anchor={theme.direction === "rtl" ? "right" : "left"}
               open={mobileOpen}
@@ -154,8 +148,6 @@ function MyApp({ Component, pageProps }) {
         </nav>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {/* <Typography paragraph>p1</Typography>
-          <Typography paragraph>p2</Typography> */}
           <Component {...pageProps} />
         </main>
       </div>
@@ -164,22 +156,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
-
-// interface Props {
-//   /**
-//    * Injected by the documentation to work in an iframe.
-//    * You won't need it on your project.
-//    */
-//   window?: () => Window;
-// }
-
-// function ResponsiveDrawer() {
-//   // const { window } = props;
-
-//   // const container =
-//   //   window !== undefined ? () => window().document.body : undefined;
-
-//   return (
-
-//   );
-// }
