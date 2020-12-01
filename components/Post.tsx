@@ -23,7 +23,7 @@ const Post = ({ post }: AppProps) => {
 
   const deletePost = async (id) => {
     try {
-      const res = await axios.delete(`/api/deletepost/${id}`);
+      await axios.delete(`/api/deletepost/${id}`);
       setDeleted(true);
     } catch (error) {
       console.log(error);
