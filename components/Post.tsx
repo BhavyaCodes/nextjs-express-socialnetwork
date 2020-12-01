@@ -1,6 +1,7 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { UserContext } from "./context/user.context";
 
 interface Creator {
   name: string;
@@ -17,11 +18,15 @@ type PostType = {
 type AppProps = { post: PostType };
 
 const Post = ({ post }: AppProps) => {
+  const loggedInUser = useContext(UserContext);
+
   const deletePost = async (id) => {
     const res = await axios.delete(`/api/deletepost/${id}`);
     console.log(res);
   };
 
+  console.log(loggedInUser);
+  console.log(post.creator._id);
   return (
     <div>
       <h1>{post.title}</h1>
@@ -31,7 +36,9 @@ const Post = ({ post }: AppProps) => {
           <p>{post.creator.name}</p>
         </a>
       </Link>
-      <button onClick={() => deletePost(post._id)}>Delete</button>
+      {loggedInUser.user?._id === post.creator._id && (
+        <button onClick={() => deletePost(post._id)}>Delete</button>
+      )}
     </div>
   );
 };

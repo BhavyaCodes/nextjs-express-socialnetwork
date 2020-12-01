@@ -33,6 +33,7 @@ router.post(
 
 router.delete(
   "/deletepost/:id",
+  requireLogin,
   async (req: any, res: Response, next: NextFunction) => {
     const id = req.params.id as string;
     try {
@@ -40,7 +41,6 @@ router.delete(
         $pull: { posts: id },
       });
       await Post.findByIdAndDelete(id);
-
       res.status(200).send({ success: true });
     } catch (error) {
       console.log(error);
