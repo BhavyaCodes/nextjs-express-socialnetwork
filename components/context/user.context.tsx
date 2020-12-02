@@ -7,6 +7,7 @@ export const SetUserContext = createContext(undefined);
 interface LoggedInUser {
   loading: boolean;
   user: {
+    _id: string;
     googleId: string;
     imageUrl: string;
     name: string;
