@@ -25,6 +25,12 @@ const userSchema = new Schema({
       ref: "Post",
     },
   ],
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+    },
+  ],
 });
 
 export default model<IUser>("User", userSchema);
