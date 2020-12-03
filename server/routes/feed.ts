@@ -58,6 +58,37 @@ router.post(
   }
 );
 
+router.post(
+  "/unlike",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const { postId } = req.body;
+    if (!req.user.likes.includes(postId)) {
+      return res
+        .status(409)
+        .json({ error: "can't unlike a post that wasn't liked" });
+    }
+    try {
+      await User.findByIdAndUpdate(req.user._id, {
+        $pull: { likes: postId },
+      });
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $pull: { likes: req.user._id },
+          $inc: { likeCount: -1 },
+        },
+        { new: true }
+      );
+
+      res.status(200).json(updatedPost);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  }
+);
+
 router.delete(
   "/deletepost/:id",
   requireLogin,
