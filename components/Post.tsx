@@ -14,6 +14,7 @@ type PostType = {
   creator: Creator;
   likeCount: number;
   likes: string[];
+  liked?: boolean;
 };
 
 type AppProps = { post: PostType };
@@ -51,6 +52,11 @@ const Post = ({ post }: AppProps) => {
       )}
       <button onClick={handleLike}>Like</button>
       <p>{post.likeCount}</p>
+      {loggedInUser.user ? (
+        <p>{post.liked ? "liked" : "not liked"}</p>
+      ) : (
+        <p>not logged in</p>
+      )}
     </div>
   );
 };
