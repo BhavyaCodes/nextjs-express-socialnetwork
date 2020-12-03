@@ -13,6 +13,7 @@ type PostType = {
   content: string;
   creator: Creator;
   likeCount: number;
+  likes: string[];
 };
 
 type AppProps = { post: PostType };

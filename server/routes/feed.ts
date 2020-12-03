@@ -5,9 +5,20 @@ import requireLogin from "../middlewares/requireLogin";
 
 const router = Router();
 
-router.get("/posts", async (req, res, next) => {
+router.get("/posts", async (req: any, res: Response, next: NextFunction) => {
   const posts = await Post.find().populate("creator").lean();
-  res.json({ posts });
+
+  if (!req.user) {
+    return res.json({ posts });
+  }
+  let liked: boolean;
+  const updatedPosts = posts.map((post) => {
+    if (req.user.likes.includes(post._id)) {
+      return { ...post, liked: true };
+    }
+    return { ...post, liked: false };
+  });
+  res.json({ posts: updatedPosts });
 });
 
 router.post(
