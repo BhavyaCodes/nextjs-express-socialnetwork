@@ -14,6 +14,8 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          {/* remove axios cdn in porduction */}
+          <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         </Head>
         <body>
           <Main />

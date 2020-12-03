@@ -6,8 +6,8 @@ import requireLogin from "../middlewares/requireLogin";
 const router = Router();
 
 router.get("/posts", async (req, res, next) => {
-  const posts = await Post.find().populate("creator");
-  res.send({ posts });
+  const posts = await Post.find().populate("creator").lean();
+  res.json({ posts });
 });
 
 router.post(
@@ -26,7 +26,35 @@ router.post(
     await User.findByIdAndUpdate(req.user._id, {
       $push: { posts: savedPost._id },
     });
-    res.status(201).send({ post: savedPost });
+    res.status(201).json({ post: savedPost });
+  }
+);
+
+router.post(
+  "/like",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const { postId } = req.body;
+    if (req.user.likes.includes(postId)) {
+      return res.status(409).json({ error: "already liked" });
+    }
+    try {
+      await User.findByIdAndUpdate(req.user._id, {
+        $push: { likes: postId },
+      });
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        {
+          $push: { likes: req.user._id },
+          $inc: { likeCount: 1 },
+        },
+        { new: true }
+      );
+      res.status(201).json(updatedPost);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
   }
 );
 
@@ -40,10 +68,10 @@ router.delete(
         $pull: { posts: id },
       });
       await Post.findByIdAndDelete(id);
-      res.status(200).send({ success: true });
+      res.status(200).json({ success: true });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ success: false });
+      res.status(500).json({ success: false });
     }
   }
 );

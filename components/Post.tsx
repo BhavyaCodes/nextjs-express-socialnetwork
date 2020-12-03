@@ -2,7 +2,6 @@ import { FC, useContext, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { UserContext } from "./context/user.context";
-
 interface Creator {
   name: string;
   _id: string;
@@ -13,6 +12,7 @@ type PostType = {
   title: string;
   content: string;
   creator: Creator;
+  likeCount: number;
 };
 
 type AppProps = { post: PostType };
@@ -34,6 +34,8 @@ const Post = ({ post }: AppProps) => {
     return null;
   }
 
+  const handleLike = async () => {};
+
   return (
     <div>
       <h1>{post.title}</h1>
@@ -46,6 +48,8 @@ const Post = ({ post }: AppProps) => {
       {loggedInUser.user?._id === post.creator._id && (
         <button onClick={() => deletePost(post._id)}>Delete</button>
       )}
+      <button onClick={handleLike}>Like</button>
+      <p>{post.likeCount}</p>
     </div>
   );
 };
