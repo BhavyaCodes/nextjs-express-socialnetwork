@@ -87,12 +87,15 @@ const Post = (props: { post: PostType }) => {
       )}
       {loggedInUser.user && (
         <>
-          <button disabled={updating} onClick={handleLike}>
-            Like
-          </button>
-          <button disabled={updating} onClick={handleUnlike}>
-            Unlike
-          </button>
+          {loggedInUser?.user?.likes?.includes(post._id) ? (
+            <button disabled={updating} onClick={handleUnlike}>
+              Unlike
+            </button>
+          ) : (
+            <button disabled={updating} onClick={handleLike}>
+              Like
+            </button>
+          )}
         </>
       )}
 
