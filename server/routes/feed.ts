@@ -5,17 +5,19 @@ import requireLogin from "../middlewares/requireLogin";
 
 const router = Router();
 
-router.get("/posts", async (req, res, next) => {
-  const posts = await Post.find().populate("creator");
-  res.send({ posts });
+router.get("/posts", async (req: any, res: Response, next: NextFunction) => {
+  const posts = await Post.find().populate("creator").lean();
+
+  if (!req.user) {
+    return res.json({ posts });
+  }
+  res.json({ posts });
 });
 
 router.post(
   "/newpost",
   requireLogin,
   async (req: any, res: Response, next: NextFunction) => {
-    console.log(req.user);
-    console.log(req.body);
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -26,7 +28,75 @@ router.post(
     await User.findByIdAndUpdate(req.user._id, {
       $push: { posts: savedPost._id },
     });
-    res.status(201).send({ post: savedPost });
+    res.status(201).json({ post: savedPost });
+  }
+);
+
+router.post(
+  "/like",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const { postId } = req.body;
+    if (req.user.likes.includes(postId)) {
+      return res.status(409).json({ error: "already liked" });
+    }
+    try {
+      await User.findByIdAndUpdate(req.user._id, {
+        $push: { likes: postId },
+      });
+      const updatedPost = await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $push: { likes: req.user._id },
+            $inc: { likeCount: 1 },
+          },
+          { new: true }
+        )
+      )
+        .populate("creator")
+        .populate("likes")
+        .execPopulate();
+      res.status(201).json(updatedPost);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+  }
+);
+
+router.post(
+  "/unlike",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const { postId } = req.body;
+    if (!req.user.likes.includes(postId)) {
+      return res
+        .status(409)
+        .json({ error: "can't unlike a post that wasn't liked" });
+    }
+    try {
+      await User.findByIdAndUpdate(req.user._id, {
+        $pull: { likes: postId },
+      });
+      const updatedPost = await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $pull: { likes: req.user._id },
+            $inc: { likeCount: -1 },
+          },
+          { new: true }
+        )
+      )
+        .populate("creator")
+        .populate("likes")
+        .execPopulate();
+      res.status(200).json(updatedPost);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
   }
 );
 
@@ -40,10 +110,10 @@ router.delete(
         $pull: { posts: id },
       });
       await Post.findByIdAndDelete(id);
-      res.status(200).send({ success: true });
+      res.status(200).json({ success: true });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ success: false });
+      res.status(500).json({ success: false });
     }
   }
 );

@@ -1,8 +1,11 @@
-import { createContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  SetStateAction,
+  Dispatch,
+} from "react";
 import axios from "axios";
-
-export const UserContext = createContext(undefined);
-export const SetUserContext = createContext(undefined);
 
 interface LoggedInUser {
   loading: boolean;
@@ -12,8 +15,14 @@ interface LoggedInUser {
     imageUrl: string;
     name: string;
     posts: string[];
+    likes: string[];
   } | null;
 }
+
+export const UserContext = createContext<LoggedInUser | undefined>(undefined);
+export const SetUserContext = createContext<
+  Dispatch<SetStateAction<LoggedInUser>> | undefined
+>(undefined);
 
 export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState<LoggedInUser>({ user: null, loading: true });

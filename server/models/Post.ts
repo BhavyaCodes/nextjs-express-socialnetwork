@@ -5,6 +5,7 @@ export interface IPost extends Document {
   title: string;
   content: string;
   creator: string | Schema.Types.ObjectId;
+  likeCount: number;
 }
 
 const postSchema = new Schema({
@@ -23,6 +24,17 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
+  likeCount: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 export default model<IPost>("Post", postSchema);
