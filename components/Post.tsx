@@ -2,6 +2,11 @@ import { FC, useContext, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { UserContext, SetUserContext } from "./context/user.context";
+
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
+import IconButton from "@material-ui/core/IconButton";
+
 interface Creator {
   name: string;
   _id: string;
@@ -85,13 +90,31 @@ const Post: FC<AppProps> = (props: AppProps) => {
       {loggedInUser.user && (
         <>
           {loggedInUser?.user?.likes?.includes(post._id) ? (
-            <button disabled={updating} onClick={handleUnlike}>
-              Unlike
-            </button>
+            <>
+              <button disabled={updating} onClick={handleUnlike}>
+                Unlike
+              </button>
+              <IconButton
+                disabled={updating}
+                color="secondary"
+                onClick={handleUnlike}
+              >
+                <ThumbUpIcon />
+              </IconButton>
+            </>
           ) : (
-            <button disabled={updating} onClick={handleLike}>
-              Like
-            </button>
+            <>
+              <button disabled={updating} onClick={handleLike}>
+                Like
+              </button>
+              <IconButton
+                disabled={updating}
+                color="secondary"
+                onClick={handleLike}
+              >
+                <ThumbUpOutlinedIcon />
+              </IconButton>
+            </>
           )}
         </>
       )}
