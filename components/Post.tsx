@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { UserContext } from "./context/user.context";
+import { UserContext, SetUserContext } from "./context/user.context";
 interface Creator {
   name: string;
   _id: string;
@@ -21,12 +21,18 @@ type AppProps = { post: PostType };
 
 const Post = ({ post }: AppProps) => {
   const [deleted, setDeleted] = useState(false);
+  const [updatedPost, setUpdatedPost] = useState<null | PostType>(null);
+  const [updating, setUpdating] = useState(false);
+
   const loggedInUser = useContext(UserContext);
+  const setLoggedInUser = useContext(SetUserContext);
 
   const deletePost = async (id) => {
     try {
       await axios.delete(`/api/deletepost/${id}`);
       setDeleted(true);
+      const user = await axios.get("/api/current_user");
+      setLoggedInUser({ user: user.data, loading: false });
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +42,54 @@ const Post = ({ post }: AppProps) => {
     return null;
   }
 
-  const handleLike = async () => {};
+  const handleLike = async () => {
+    setUpdating(true);
+    try {
+      const res = await axios.post("/api/like", { postId: post._id });
+      console.log(res.data);
+      setUpdatedPost(res.data);
+      const user = await axios.get("/api/current_user");
+      setLoggedInUser({ user: user.data, loading: false });
+    } catch (error) {
+      console.log(error);
+    }
+    setUpdating(false);
+    console.log(updatedPost);
+  };
+
+  if (updatedPost) {
+    console.log("updatedPost");
+    return (
+      <div>
+        <h1>{updatedPost.title}</h1>
+        <h3>{updatedPost.content}</h3>
+        <Link href="/profile/[id]" as={`/profile/${updatedPost.creator._id}`}>
+          <a>
+            <p>{updatedPost.creator.name}</p>
+          </a>
+        </Link>
+        {loggedInUser.user?._id === updatedPost.creator._id && (
+          <button onClick={() => deletePost(updatedPost._id)}>Delete</button>
+        )}
+        <button disabled={updating} onClick={handleLike}>
+          Like
+        </button>
+        <p>{`${updatedPost.likeCount} likes`}</p>
+        {loggedInUser?.user ? (
+          <p>
+            {loggedInUser?.user?.likes?.includes(updatedPost._id)
+              ? "liked"
+              : "not liked"}
+          </p>
+        ) : (
+          <p>not logged in</p>
+        )}
+      </div>
+    );
+  }
+
+  console.log(loggedInUser);
+  console.log(post);
 
   return (
     <div>
@@ -50,10 +103,16 @@ const Post = ({ post }: AppProps) => {
       {loggedInUser.user?._id === post.creator._id && (
         <button onClick={() => deletePost(post._id)}>Delete</button>
       )}
-      <button onClick={handleLike}>Like</button>
-      <p>{post.likeCount}</p>
-      {loggedInUser.user ? (
-        <p>{post.liked ? "liked" : "not liked"}</p>
+      <button disabled={updating} onClick={handleLike}>
+        Like
+      </button>
+      <p>{`${post.likeCount} likes`}</p>
+      {loggedInUser?.user ? (
+        <p>
+          {loggedInUser?.user?.likes?.includes(post._id)
+            ? "liked"
+            : "not liked"}
+        </p>
       ) : (
         <p>not logged in</p>
       )}
