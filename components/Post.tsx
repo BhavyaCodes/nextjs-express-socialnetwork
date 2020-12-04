@@ -19,8 +19,7 @@ type PostType = {
 
 type AppProps = { post: PostType };
 
-// const Post = ({ post }: AppProps) => {
-const Post = (props: { post: PostType }) => {
+const Post: FC<AppProps> = (props: AppProps) => {
   const [deleted, setDeleted] = useState(false);
   const [post, setPost] = useState<PostType>(props.post);
   const [updating, setUpdating] = useState(false);
@@ -28,7 +27,7 @@ const Post = (props: { post: PostType }) => {
   const loggedInUser = useContext(UserContext);
   const setLoggedInUser = useContext(SetUserContext);
 
-  const deletePost = async (id) => {
+  const deletePost = async (id: string) => {
     try {
       await axios.delete(`/api/deletepost/${id}`);
       setDeleted(true);
@@ -54,11 +53,9 @@ const Post = (props: { post: PostType }) => {
       console.log(error);
     }
     setUpdating(false);
-    console.log(post);
   };
 
   const handleUnlike = async () => {
-    console.log("handleUnlike");
     setUpdating(true);
     try {
       const res = await axios.post("/api/unlike", { postId: post._id });

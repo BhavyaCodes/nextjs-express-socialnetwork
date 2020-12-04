@@ -11,13 +11,6 @@ router.get("/posts", async (req: any, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.json({ posts });
   }
-  // let liked: boolean;
-  // const updatedPosts = posts.map((post) => {
-  //   if (req.user.likes.includes(post._id)) {
-  //     return { ...post, liked: true };
-  //   }
-  //   return { ...post, liked: false };
-  // });
   res.json({ posts });
 });
 
@@ -25,8 +18,6 @@ router.post(
   "/newpost",
   requireLogin,
   async (req: any, res: Response, next: NextFunction) => {
-    console.log(req.user);
-    console.log(req.body);
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -66,9 +57,6 @@ router.post(
         .populate("creator")
         .populate("likes")
         .execPopulate();
-
-      console.log(updatedPost);
-
       res.status(201).json(updatedPost);
     } catch (error) {
       console.log(error);
@@ -104,15 +92,6 @@ router.post(
         .populate("creator")
         .populate("likes")
         .execPopulate();
-      // const updatedPost2 = await updatedPost
-      //   .populate("creator")
-      //   .populate("likes")
-      //   .execPopulate();
-      // console.log(updatedPost2);
-      // console.log(updatedPost);
-
-      // const updatedPostWithLike = { ...updatedPost2, liked: false };
-
       res.status(200).json(updatedPost);
     } catch (error) {
       console.log(error);
