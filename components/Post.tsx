@@ -73,6 +73,16 @@ const Post: FC<AppProps> = (props: AppProps) => {
     setUpdating(false);
   };
 
+  const renderLikeText = () => (
+    <>
+      {post.likeCount !== 0 && (
+        <span>{`${post.likeCount} ${
+          post.likeCount > 1 ? "likes" : "like"
+        }`}</span>
+      )}
+    </>
+  );
+
   return (
     <div>
       <h1>{post.title}</h1>
@@ -91,9 +101,6 @@ const Post: FC<AppProps> = (props: AppProps) => {
         <>
           {loggedInUser?.user?.likes?.includes(post._id) ? (
             <>
-              <button disabled={updating} onClick={handleUnlike}>
-                Unlike
-              </button>
               <IconButton
                 disabled={updating}
                 color="secondary"
@@ -101,12 +108,10 @@ const Post: FC<AppProps> = (props: AppProps) => {
               >
                 <ThumbUpIcon />
               </IconButton>
+              {renderLikeText()}
             </>
           ) : (
             <>
-              <button disabled={updating} onClick={handleLike}>
-                Like
-              </button>
               <IconButton
                 disabled={updating}
                 color="secondary"
@@ -114,21 +119,13 @@ const Post: FC<AppProps> = (props: AppProps) => {
               >
                 <ThumbUpOutlinedIcon />
               </IconButton>
+              {renderLikeText()}
             </>
           )}
         </>
       )}
 
-      <p>{`${post.likeCount} likes`}</p>
-      {loggedInUser?.user ? (
-        <p>
-          {loggedInUser?.user?.likes?.includes(post._id)
-            ? "liked"
-            : "not liked"}
-        </p>
-      ) : (
-        <p>not logged in</p>
-      )}
+      <div>{!loggedInUser.user && renderLikeText()}</div>
     </div>
   );
 };
