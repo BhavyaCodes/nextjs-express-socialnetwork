@@ -59,6 +59,16 @@ const Post = (props: { post: PostType }) => {
 
   const handleUnlike = async () => {
     console.log("handleUnlike");
+    setUpdating(true);
+    try {
+      const res = await axios.post("/api/unlike", { postId: post._id });
+      setPost(res.data);
+      const user = await axios.get("/api/current_user");
+      setLoggedInUser({ user: user.data, loading: false });
+    } catch (error) {
+      console.log(error);
+    }
+    setUpdating(false);
   };
 
   return (
