@@ -19,9 +19,10 @@ type PostType = {
 
 type AppProps = { post: PostType };
 
-const Post = ({ post }: AppProps) => {
+// const Post = ({ post }: AppProps) => {
+const Post = (props: { post: PostType }) => {
   const [deleted, setDeleted] = useState(false);
-  const [updatedPost, setUpdatedPost] = useState<null | PostType>(null);
+  const [post, setPost] = useState<PostType>(props.post);
   const [updating, setUpdating] = useState(false);
 
   const loggedInUser = useContext(UserContext);
@@ -46,50 +47,19 @@ const Post = ({ post }: AppProps) => {
     setUpdating(true);
     try {
       const res = await axios.post("/api/like", { postId: post._id });
-      console.log(res.data);
-      setUpdatedPost(res.data);
+      setPost(res.data);
       const user = await axios.get("/api/current_user");
       setLoggedInUser({ user: user.data, loading: false });
     } catch (error) {
       console.log(error);
     }
     setUpdating(false);
-    console.log(updatedPost);
+    console.log(post);
   };
 
-  if (updatedPost) {
-    console.log("updatedPost");
-    return (
-      <div>
-        <h1>{updatedPost.title}</h1>
-        <h3>{updatedPost.content}</h3>
-        <Link href="/profile/[id]" as={`/profile/${updatedPost.creator._id}`}>
-          <a>
-            <p>{updatedPost.creator.name}</p>
-          </a>
-        </Link>
-        {loggedInUser.user?._id === updatedPost.creator._id && (
-          <button onClick={() => deletePost(updatedPost._id)}>Delete</button>
-        )}
-        <button disabled={updating} onClick={handleLike}>
-          Like
-        </button>
-        <p>{`${updatedPost.likeCount} likes`}</p>
-        {loggedInUser?.user ? (
-          <p>
-            {loggedInUser?.user?.likes?.includes(updatedPost._id)
-              ? "liked"
-              : "not liked"}
-          </p>
-        ) : (
-          <p>not logged in</p>
-        )}
-      </div>
-    );
-  }
-
-  console.log(loggedInUser);
-  console.log(post);
+  const handleUnlike = async () => {
+    console.log("handleUnlike");
+  };
 
   return (
     <div>
@@ -101,11 +71,21 @@ const Post = ({ post }: AppProps) => {
         </a>
       </Link>
       {loggedInUser.user?._id === post.creator._id && (
-        <button onClick={() => deletePost(post._id)}>Delete</button>
+        <>
+          <button onClick={() => deletePost(post._id)}>Delete</button>
+        </>
       )}
-      <button disabled={updating} onClick={handleLike}>
-        Like
-      </button>
+      {loggedInUser.user && (
+        <>
+          <button disabled={updating} onClick={handleLike}>
+            Like
+          </button>
+          <button disabled={updating} onClick={handleUnlike}>
+            Unlike
+          </button>
+        </>
+      )}
+
       <p>{`${post.likeCount} likes`}</p>
       {loggedInUser?.user ? (
         <p>
