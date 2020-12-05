@@ -41,9 +41,6 @@ router.post(
       return res.status(409).json({ error: "already liked" });
     }
     try {
-      await User.findByIdAndUpdate(req.user._id, {
-        $push: { likes: postId },
-      });
       const updatedPost = await (
         await Post.findByIdAndUpdate(
           postId,
@@ -57,6 +54,10 @@ router.post(
         .populate("creator")
         .populate("likes")
         .execPopulate();
+
+      await User.findByIdAndUpdate(req.user._id, {
+        $push: { likes: postId },
+      });
       res.status(201).json(updatedPost);
     } catch (error) {
       console.log(error);
