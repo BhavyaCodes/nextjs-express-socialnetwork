@@ -1,6 +1,6 @@
 ## TODO
 
-- [ ] Fix post on profile page
+- [x] Fix post on profile page
 - [ ] Add Comment feature
 - [ ] style Post component
 - [ ] add image upload support
