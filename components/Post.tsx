@@ -4,7 +4,6 @@ import axios from "axios";
 import { UserContext, SetUserContext } from "./context/user.context";
 
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
 import IconButton from "@material-ui/core/IconButton";
 
 interface Creator {
@@ -114,10 +113,10 @@ const Post: FC<AppProps> = (props: AppProps) => {
             <>
               <IconButton
                 disabled={updating}
-                color="secondary"
+                color="default"
                 onClick={handleLike}
               >
-                <ThumbUpOutlinedIcon />
+                <ThumbUpIcon />
               </IconButton>
               {renderLikeText()}
             </>
