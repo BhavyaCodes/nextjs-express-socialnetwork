@@ -101,7 +101,8 @@ const Post: FC<AppProps> = (props: AppProps) => {
       <div key={comment._id}>
         <p>{comment.content}</p>
         <p>{new Date(comment.createdAt).toLocaleString()}</p>
-        {loggedInUser?.user?._id === comment.creator._id && (
+        {(loggedInUser?.user?._id === comment.creator._id ||
+          loggedInUser?.user?._id === post.creator._id) && (
           <button
             onClick={() => {
               handleDeleteComment(comment._id);
