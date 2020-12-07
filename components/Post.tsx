@@ -157,8 +157,8 @@ const Post: FC<AppProps> = (props: AppProps) => {
       )}
 
       <div>{!loggedInUser.user && renderLikeText()}</div>
-      <h2>Comments</h2>
       <p>{new Date(post.createdAt).toLocaleString()}</p>
+      <h2>Comments</h2>
       {renderComments()}
     </div>
   );
