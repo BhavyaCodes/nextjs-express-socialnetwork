@@ -6,7 +6,27 @@ export interface IPost extends Document {
   content: string;
   creator: string | Schema.Types.ObjectId;
   likeCount: number;
+  comment: Comment;
 }
+
+type Comment = {
+  _id: string | Schema.Types.ObjectId;
+  creator: string | Schema.Types.ObjectId;
+  content: string;
+};
+
+const commentSchema = new Schema({
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
 
 const postSchema = new Schema({
   title: {
@@ -35,6 +55,7 @@ const postSchema = new Schema({
       ref: "User",
     },
   ],
+  comments: [commentSchema],
 });
 
 export default model<IPost>("Post", postSchema);
