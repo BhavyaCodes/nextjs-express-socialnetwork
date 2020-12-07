@@ -11,6 +11,13 @@ interface Creator {
   _id: string;
 }
 
+type Comment = {
+  _id: string;
+  creator: Creator;
+  content: string;
+  createdAt: Date;
+};
+
 type PostType = {
   _id: string;
   title: string;
@@ -19,6 +26,9 @@ type PostType = {
   likeCount: number;
   likes: string[];
   liked?: boolean;
+  comments: Comment[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type AppProps = { post: PostType };
@@ -82,6 +92,27 @@ const Post: FC<AppProps> = (props: AppProps) => {
     </>
   );
 
+  const handleDeleteComment = (id: string) => {
+    console.log(id);
+  };
+
+  const renderComments = () =>
+    post.comments.map((comment) => (
+      <div key={comment._id}>
+        <p>{comment.content}</p>
+        <p>{new Date(comment.createdAt).toLocaleString()}</p>
+        {loggedInUser?.user?._id === comment.creator._id && (
+          <button
+            onClick={() => {
+              handleDeleteComment(comment._id);
+            }}
+          >
+            Delete comment
+          </button>
+        )}
+      </div>
+    ));
+
   return (
     <div>
       <h1>{post.title}</h1>
@@ -125,6 +156,9 @@ const Post: FC<AppProps> = (props: AppProps) => {
       )}
 
       <div>{!loggedInUser.user && renderLikeText()}</div>
+      <h2>Comments</h2>
+      <p>{new Date(post.createdAt).toLocaleString()}</p>
+      {renderComments()}
     </div>
   );
 };
