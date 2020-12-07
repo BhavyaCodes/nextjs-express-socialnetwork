@@ -6,56 +6,66 @@ export interface IPost extends Document {
   content: string;
   creator: string | Schema.Types.ObjectId;
   likeCount: number;
-  comment: Comment;
+  likes: Schema.Types.ObjectId[];
+  comments: Comment[];
 }
 
 type Comment = {
-  _id: string | Schema.Types.ObjectId;
   creator: string | Schema.Types.ObjectId;
   content: string;
 };
 
-const commentSchema = new Schema({
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-});
-
-const postSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  content: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  likeCount: {
-    type: Number,
-    default: 0,
-    required: true,
-  },
-  likes: [
-    {
+const commentSchema = new Schema<Comment>(
+  {
+    creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
-  ],
-  comments: [commentSchema],
-});
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const postSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    likeCount: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    comments: [commentSchema],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export default model<IPost>("Post", postSchema);

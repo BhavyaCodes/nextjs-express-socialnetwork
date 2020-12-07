@@ -101,6 +101,32 @@ router.post(
   }
 );
 
+router.post(
+  "/addcomment",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const userId: string = req.user._id;
+    const { postId, content } = req.body;
+    const comment: {
+      creator: string;
+      content: string;
+    } = {
+      creator: userId,
+      content,
+    };
+    const savedPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: comment,
+        },
+      },
+      { new: true }
+    );
+    res.status(201).json(savedPost);
+  }
+);
+
 router.delete(
   "/deletepost/:id",
   requireLogin,
