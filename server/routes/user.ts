@@ -12,9 +12,19 @@ router.get("/profile/:id", async (req, res, next) => {
           path: "creator",
         },
       })
+      .populate({
+        path: "posts",
+        populate: {
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        },
+      })
       .populate("likes");
     res.send(user);
   } catch (error) {
+    console.log(error);
     res.status(404).send();
   }
 });

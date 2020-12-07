@@ -5,6 +5,7 @@
 - [ ] style Post component
 - [ ] add image upload support
 - [ ] share link for single post feature
+- [ ] remove extra information from api requests
 
 ## Notes
 
