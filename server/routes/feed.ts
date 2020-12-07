@@ -62,6 +62,12 @@ router.post(
       )
         .populate("creator")
         .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
         .execPopulate();
 
       await User.findByIdAndUpdate(req.user._id, {
@@ -101,6 +107,12 @@ router.post(
       )
         .populate("creator")
         .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
         .execPopulate();
       res.status(200).json(updatedPost);
     } catch (error) {
