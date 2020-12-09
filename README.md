@@ -1,7 +1,7 @@
 ## TODO
 
 - [x] Fix post on profile page
-- [ ] Add Comment feature
+- [x] Add Comment feature
 - [ ] style Post component
 - [ ] add image upload support
 - [ ] share link for single post feature
