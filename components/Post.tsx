@@ -95,17 +95,26 @@ const Post: FC<AppProps> = (props: AppProps) => {
 
   const handleSubmitComment = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(newComment);
-    const res = await axios.post("/api/addcomment", {
-      postId: post._id,
-      content: newComment,
-    });
-    setPost(res.data);
+    try {
+      const res = await axios.post("/api/addcomment", {
+        postId: post._id,
+        content: newComment,
+      });
+      setPost(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    const res = await axios.post(`/api/deletecomment/${post._id}/${commentId}`);
-    setPost(res.data);
+    try {
+      const res = await axios.post(
+        `/api/deletecomment/${post._id}/${commentId}`
+      );
+      setPost(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderComments = () =>

@@ -135,26 +135,33 @@ router.post(
       creator: userId,
       content,
     };
-    const savedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $push: {
-            comments: comment,
+    try {
+      const savedPost = await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $push: {
+              comments: comment,
+            },
           },
-        },
-        { new: true }
-      )
-        .populate("creator")
-        .populate("likes")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "creator",
-          },
-        })
-    ).execPopulate();
-    res.status(201).json(savedPost);
+          { new: true }
+        )
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+      ).execPopulate();
+      if (savedPost) {
+        return res.status(201).json(savedPost);
+      }
+      res.status(404).json({ error: "unable to save" });
+    } catch (error) {
+      res.status(500).send();
+    }
   }
 );
 
@@ -166,35 +173,36 @@ router.post(
       postId,
       commentId,
     }: { postId: string; commentId: string } = req.params;
-    const post = await Post.findById(postId);
+    try {
+      const post = await Post.findById(postId);
 
-    // const commentIndex = post.comments.findIndex((comment) => {
-    //   comment._id === commentId;
-    // });
-
-    const includes = post.comments.some((comment) => comment._id == commentId);
-
-    console.log(postId);
-    console.log(commentId);
-    console.log(post);
-    console.log(includes);
-    console.log(req.user._id === post.creator);
-    if (req.user._id === post.creator || includes) {
-      // permitted to delete
-      post.comments.pull({ _id: commentId });
-      const savedPost = await (await post.save())
-        .populate("creator")
-        .populate("likes")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "creator",
-          },
-        })
-        .execPopulate();
-      return res.status(200).json(savedPost);
-    } else {
-      console.log("unauthorised");
+      const includes = post.comments.some(
+        (comment) => comment._id == commentId
+      );
+      // console.log(postId);
+      // console.log(commentId);
+      // console.log(post);
+      // console.log(includes);
+      // console.log(req.user._id === post.creator);
+      if (req.user._id === post.creator || includes) {
+        // permitted to delete
+        post.comments.pull({ _id: commentId });
+        const savedPost = await (await post.save())
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+          .execPopulate();
+        return res.status(200).json(savedPost);
+      } else {
+        return res.status(401).send();
+      }
+    } catch (error) {
+      res.status(500).send(error);
     }
   }
 );
