@@ -100,12 +100,12 @@ const Post: FC<AppProps> = (props: AppProps) => {
       postId: post._id,
       content: newComment,
     });
-    // console.log(res);
     setPost(res.data);
   };
 
-  const handleDeleteComment = (id: string) => {
-    console.log(id);
+  const handleDeleteComment = async (commentId: string) => {
+    const res = await axios.post(`/api/deletecomment/${post._id}/${commentId}`);
+    setPost(res.data);
   };
 
   const renderComments = () =>

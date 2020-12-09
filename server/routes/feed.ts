@@ -182,8 +182,17 @@ router.post(
     if (req.user._id === post.creator || includes) {
       // permitted to delete
       post.comments.pull({ _id: commentId });
-      const savedPost = await post.save();
-      return res.status(200).json({ savedPost, post });
+      const savedPost = await (await post.save())
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+        .execPopulate();
+      return res.status(200).json(savedPost);
     } else {
       console.log("unauthorised");
     }
