@@ -6,7 +6,16 @@ import requireLogin from "../middlewares/requireLogin";
 const router = Router();
 
 router.get("/posts", async (req: any, res: Response, next: NextFunction) => {
-  const posts = await Post.find().populate("creator").lean();
+  const posts = await Post.find()
+    .populate("creator")
+    .populate("likes")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "creator",
+      },
+    })
+    .lean();
 
   if (!req.user) {
     return res.json({ posts });
@@ -53,6 +62,12 @@ router.post(
       )
         .populate("creator")
         .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
         .execPopulate();
 
       await User.findByIdAndUpdate(req.user._id, {
@@ -92,11 +107,102 @@ router.post(
       )
         .populate("creator")
         .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
         .execPopulate();
       res.status(200).json(updatedPost);
     } catch (error) {
       console.log(error);
       res.status(500).json(error);
+    }
+  }
+);
+
+router.post(
+  "/addcomment",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const userId: string = req.user._id;
+    const { postId, content } = req.body;
+    const comment: {
+      creator: string;
+      content: string;
+    } = {
+      creator: userId,
+      content,
+    };
+    try {
+      const savedPost = await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $push: {
+              comments: comment,
+            },
+          },
+          { new: true }
+        )
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+      ).execPopulate();
+      if (savedPost) {
+        return res.status(201).json(savedPost);
+      }
+      res.status(404).json({ error: "unable to save" });
+    } catch (error) {
+      res.status(500).send();
+    }
+  }
+);
+
+router.post(
+  "/deletecomment/:postId/:commentId",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const {
+      postId,
+      commentId,
+    }: { postId: string; commentId: string } = req.params;
+    try {
+      const post = await Post.findById(postId);
+
+      const includes = post.comments.some(
+        (comment) => comment._id == commentId
+      );
+      // console.log(postId);
+      // console.log(commentId);
+      // console.log(post);
+      // console.log(includes);
+      // console.log(req.user._id === post.creator);
+      if (req.user._id === post.creator || includes) {
+        // permitted to delete
+        post.comments.pull({ _id: commentId });
+        const savedPost = await (await post.save())
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+          .execPopulate();
+        return res.status(200).json(savedPost);
+      } else {
+        return res.status(401).send();
+      }
+    } catch (error) {
+      res.status(500).send(error);
     }
   }
 );

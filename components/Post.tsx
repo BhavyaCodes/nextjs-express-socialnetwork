@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useState, FormEvent } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { UserContext, SetUserContext } from "./context/user.context";
@@ -11,7 +11,14 @@ interface Creator {
   _id: string;
 }
 
-type PostType = {
+type Comment = {
+  _id: string;
+  creator: Creator;
+  content: string;
+  createdAt: Date;
+};
+
+export type PostType = {
   _id: string;
   title: string;
   content: string;
@@ -19,6 +26,9 @@ type PostType = {
   likeCount: number;
   likes: string[];
   liked?: boolean;
+  comments: Comment[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type AppProps = { post: PostType };
@@ -27,6 +37,7 @@ const Post: FC<AppProps> = (props: AppProps) => {
   const [deleted, setDeleted] = useState(false);
   const [post, setPost] = useState<PostType>(props.post);
   const [updating, setUpdating] = useState(false);
+  const [newComment, setComment] = useState("");
 
   const loggedInUser = useContext(UserContext);
   const setLoggedInUser = useContext(SetUserContext);
@@ -82,6 +93,48 @@ const Post: FC<AppProps> = (props: AppProps) => {
     </>
   );
 
+  const handleSubmitComment = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/addcomment", {
+        postId: post._id,
+        content: newComment,
+      });
+      setPost(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      const res = await axios.post(
+        `/api/deletecomment/${post._id}/${commentId}`
+      );
+      setPost(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderComments = () =>
+    post.comments.map((comment) => (
+      <div key={comment._id}>
+        <p>{comment.content}</p>
+        <p>{new Date(comment.createdAt).toLocaleString()}</p>
+        {(loggedInUser?.user?._id === comment.creator._id ||
+          loggedInUser?.user?._id === post.creator._id) && (
+          <button
+            onClick={() => {
+              handleDeleteComment(comment._id);
+            }}
+          >
+            Delete comment
+          </button>
+        )}
+      </div>
+    ));
+
   return (
     <div>
       <h1>{post.title}</h1>
@@ -125,6 +178,21 @@ const Post: FC<AppProps> = (props: AppProps) => {
       )}
 
       <div>{!loggedInUser.user && renderLikeText()}</div>
+      <p>{new Date(post.createdAt).toLocaleString()}</p>
+      <h2>Comments</h2>
+      {renderComments()}
+      <form onSubmit={handleSubmitComment}>
+        <label>Comment</label>
+        <input
+          placeholder="Add a new comment"
+          type="text"
+          value={newComment}
+          onChange={(e) => {
+            setComment(e.target.value);
+          }}
+        />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };
