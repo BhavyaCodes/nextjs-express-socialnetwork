@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model } from "mongoose";
+import mongoose, { Document, Schema, model, Types } from "mongoose";
 
 export interface IPost extends Document {
   _id: string | Schema.Types.ObjectId;
@@ -7,13 +7,13 @@ export interface IPost extends Document {
   creator: string | Schema.Types.ObjectId;
   likeCount: number;
   likes: Schema.Types.ObjectId[];
-  comments: Comment[];
+  comments: Types.Array<Comment>;
 }
 
-type Comment = {
+interface Comment extends Types.Subdocument {
   creator: string | Schema.Types.ObjectId;
   content: string;
-};
+}
 
 const commentSchema = new Schema<Comment>(
   {

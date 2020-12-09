@@ -148,6 +148,38 @@ router.post(
   }
 );
 
+router.post(
+  "/deletecomment/:postId/:commentId",
+  requireLogin,
+  async (req: any, res: Response, next: NextFunction) => {
+    const {
+      postId,
+      commentId,
+    }: { postId: string; commentId: string } = req.params;
+    const post = await Post.findById(postId);
+
+    // const commentIndex = post.comments.findIndex((comment) => {
+    //   comment._id === commentId;
+    // });
+
+    const includes = post.comments.some((comment) => comment._id == commentId);
+
+    console.log(postId);
+    console.log(commentId);
+    console.log(post);
+    console.log(includes);
+    console.log(req.user._id === post.creator);
+    if (req.user._id === post.creator || includes) {
+      // permitted to delete
+      post.comments.pull({ _id: commentId });
+      const savedPost = await post.save();
+      return res.status(200).json({ savedPost, post });
+    } else {
+      console.log("unauthorised");
+    }
+  }
+);
+
 router.delete(
   "/deletepost/:id",
   requireLogin,
