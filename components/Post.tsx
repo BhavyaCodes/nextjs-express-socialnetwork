@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useState, FormEvent } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { UserContext, SetUserContext } from "./context/user.context";
@@ -18,7 +18,7 @@ type Comment = {
   createdAt: Date;
 };
 
-type PostType = {
+export type PostType = {
   _id: string;
   title: string;
   content: string;
@@ -37,6 +37,7 @@ const Post: FC<AppProps> = (props: AppProps) => {
   const [deleted, setDeleted] = useState(false);
   const [post, setPost] = useState<PostType>(props.post);
   const [updating, setUpdating] = useState(false);
+  const [newComment, setComment] = useState("");
 
   const loggedInUser = useContext(UserContext);
   const setLoggedInUser = useContext(SetUserContext);
@@ -91,6 +92,17 @@ const Post: FC<AppProps> = (props: AppProps) => {
       )}
     </>
   );
+
+  const handleSubmitComment = async (e: FormEvent) => {
+    e.preventDefault();
+    console.log(newComment);
+    const res = await axios.post("/api/addcomment", {
+      postId: post._id,
+      content: newComment,
+    });
+    // console.log(res);
+    setPost(res.data);
+  };
 
   const handleDeleteComment = (id: string) => {
     console.log(id);
@@ -160,6 +172,18 @@ const Post: FC<AppProps> = (props: AppProps) => {
       <p>{new Date(post.createdAt).toLocaleString()}</p>
       <h2>Comments</h2>
       {renderComments()}
+      <form onSubmit={handleSubmitComment}>
+        <label>Comment</label>
+        <input
+          placeholder="Add a new comment"
+          type="text"
+          value={newComment}
+          onChange={(e) => {
+            setComment(e.target.value);
+          }}
+        />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };

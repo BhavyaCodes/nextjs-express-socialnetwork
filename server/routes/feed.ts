@@ -135,15 +135,25 @@ router.post(
       creator: userId,
       content,
     };
-    const savedPost = await Post.findByIdAndUpdate(
-      postId,
-      {
-        $push: {
-          comments: comment,
+    const savedPost = await (
+      await Post.findByIdAndUpdate(
+        postId,
+        {
+          $push: {
+            comments: comment,
+          },
         },
-      },
-      { new: true }
-    );
+        { new: true }
+      )
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+    ).execPopulate();
     res.status(201).json(savedPost);
   }
 );

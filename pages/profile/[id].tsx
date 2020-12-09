@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Post from "../../components/Post";
 
+import { PostType } from "../../components/Post";
+
 type Profile = {
   loading: boolean;
   user: {
@@ -11,21 +13,6 @@ type Profile = {
     posts: PostType[];
   } | null;
 };
-
-type PostType = {
-  _id: string;
-  title: string;
-  content: string;
-  creator: Creator;
-  likeCount: number;
-  likes: string[];
-  liked?: boolean;
-};
-
-interface Creator {
-  name: string;
-  _id: string;
-}
 
 const ProfilePage = () => {
   const { id } = useRouter().query;
