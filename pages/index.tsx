@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import axios from "axios";
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
 
 import Post from "../components/Post";
 
@@ -24,7 +22,7 @@ export default function Home() {
     }
   };
 
-  const handlePostSubmit = async (e) => {
+  const handlePostSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(title, content);
     try {
