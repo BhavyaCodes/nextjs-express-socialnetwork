@@ -6,6 +6,7 @@
 - [ ] add image upload support
 - [ ] share link for single post feature
 - [ ] remove extra information from api requests
+- [ ] refactor like/unlike to send only 1 request
 
 ## Notes
 
