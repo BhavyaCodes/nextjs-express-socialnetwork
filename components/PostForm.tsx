@@ -43,8 +43,13 @@ function PostForm({ getPosts }) {
 
   return (
     <form onSubmit={handlePostSubmit}>
+      <input
+        type="file"
+        accept=".jpg,.jpeg,.png,.gif"
+        onChange={fileChangedHandler}
+        multiple={false}
+      />
       <label htmlFor="title">Title</label>
-      <input type="file" onChange={fileChangedHandler} />
       <input
         id="title"
         value={title}
