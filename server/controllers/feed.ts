@@ -27,10 +27,15 @@ export const createNewPost = async (
   res: Response,
   next: NextFunction
 ) => {
+  // console.log(req.body);
+  // console.log(req.file);
+  if (req.file) {
+  }
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
     creator: req.user._id,
+    imageName: req.file ? req.file.filename : undefined,
   });
 
   const savedPost = await post.save();
