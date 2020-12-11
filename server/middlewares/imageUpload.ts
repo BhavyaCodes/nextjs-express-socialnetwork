@@ -27,7 +27,8 @@ const fileFilter = (
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/gif"
   ) {
     cb(null, true);
   } else {
@@ -35,4 +36,11 @@ const fileFilter = (
   }
 };
 
-export default multer({ storage: storage, fileFilter: fileFilter });
+export default multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    files: 1,
+    fileSize: 10485760, // 1024 * 1024 * 10  = 10mb
+  },
+});
