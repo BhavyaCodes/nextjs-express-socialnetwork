@@ -6,13 +6,12 @@ function PostForm({ getPosts }) {
   const [content, setContent] = useState("");
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [fileError, setFileError] = useState("");
+  const [previewSource, setPreviewSource] = useState(null);
 
   const handlePostSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(title, content);
     try {
-      // const res = await axios.post("/api/newpost", { title, content });
-      // console.log(res);
       const fd = new FormData();
       if (selectedFile) {
         fd.append("image", selectedFile);
@@ -40,11 +39,20 @@ function PostForm({ getPosts }) {
     const file = event.target.files[0];
     setSelectedFile(file);
     console.log(file);
+    previewFile(file);
     if (file.size > 10485760) {
       setFileError("max file size is 10 mb");
     } else {
       setFileError("");
     }
+  };
+
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
   };
 
   return (
@@ -55,6 +63,9 @@ function PostForm({ getPosts }) {
         onChange={fileChangedHandler}
         multiple={false}
       />
+      {previewSource && (
+        <img src={previewSource} alt="chosen" style={{ width: "30%" }} />
+      )}
       {fileError}
       <label htmlFor="title">Title</label>
       <input
