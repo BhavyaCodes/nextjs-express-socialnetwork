@@ -45,6 +45,10 @@ const postSchema = new Schema(
       required: true,
       trim: true,
     },
+    imageName: {
+      type: String,
+      trim: true,
+    },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",

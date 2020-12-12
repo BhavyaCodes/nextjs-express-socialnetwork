@@ -31,6 +31,7 @@ export const createNewPost = async (
     title: req.body.title,
     content: req.body.content,
     creator: req.user._id,
+    imageName: req.file ? req.file.filename : undefined,
   });
 
   const savedPost = await post.save();

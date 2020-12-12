@@ -1,5 +1,6 @@
 import { Router } from "express";
 import requireLogin from "../middlewares/requireLogin";
+import imageUpload from "../middlewares/imageUpload";
 import {
   getPosts,
   createNewPost,
@@ -14,7 +15,12 @@ const router = Router();
 
 router.get("/posts", getPosts);
 
-router.post("/newpost", requireLogin, createNewPost);
+router.post(
+  "/newpost",
+  requireLogin,
+  imageUpload.single("image"),
+  createNewPost
+);
 
 router.post("/like", requireLogin, likePost);
 
