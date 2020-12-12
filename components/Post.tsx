@@ -45,9 +45,6 @@ const Post: FC<AppProps> = (props: AppProps) => {
   const loggedInUser = useContext(UserContext);
   const setLoggedInUser = useContext(SetUserContext);
 
-  const baseImageUrl = process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_BASE_URL;
-  console.log(baseImageUrl);
-
   const deletePost = async (id: string) => {
     try {
       await axios.delete(`/api/deletepost/${id}`);
@@ -202,6 +199,7 @@ const Post: FC<AppProps> = (props: AppProps) => {
           onChange={(e) => {
             setComment(e.target.value);
           }}
+          required
         />
         <button type="submit">Submit</button>
       </form>

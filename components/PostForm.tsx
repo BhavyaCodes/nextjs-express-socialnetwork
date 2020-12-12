@@ -94,6 +94,7 @@ function PostForm({ getPosts }) {
         onChange={(e) => {
           setTitle(e.target.value);
         }}
+        required
       />
       <label htmlFor="content">Content</label>
       <input
@@ -102,6 +103,7 @@ function PostForm({ getPosts }) {
         onChange={(e) => {
           setContent(e.target.value);
         }}
+        required
       />
       <button type="submit">Post</button>
     </form>
