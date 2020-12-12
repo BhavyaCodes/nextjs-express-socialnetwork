@@ -27,8 +27,6 @@ export const createNewPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.file) {
-  }
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
