@@ -27,8 +27,6 @@ export const createNewPost = async (
   res: Response,
   next: NextFunction
 ) => {
-  // console.log(req.body);
-  // console.log(req.file);
   if (req.file) {
   }
   const post = new Post({

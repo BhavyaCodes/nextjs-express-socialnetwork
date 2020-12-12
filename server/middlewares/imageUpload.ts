@@ -19,11 +19,20 @@ const storage = new CloudinaryStorage({
   },
 });
 
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       fileValidationError: Error;
+//     }
+//   }
+// }
+
 const fileFilter = (
   req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback
 ) => {
+  const largeFileError = new Error();
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
@@ -41,6 +50,6 @@ export default multer({
   fileFilter: fileFilter,
   limits: {
     files: 1,
-    fileSize: 10485760, // 1024 * 1024 * 10  = 10mb
+    fileSize: 10485760, //10485760, // 1024 * 1024 * 10  = 10mb
   },
 });

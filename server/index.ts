@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import next from "next";
 import mongoose from "mongoose";
 import cookieSession from "cookie-session";
@@ -33,6 +33,18 @@ app.prepare().then(() => {
   server.use(authRouter);
   server.use("/api", userRouter);
   server.use("/api", feedRouter);
+
+  server.use(
+    (error: Error, req: Request, res: Response, next: NextFunction) => {
+      console.error(error.stack);
+      console.log(error.message);
+      console.log(error.name);
+      if (error.message === "File too large") {
+        return res.status(415).json({ error: error.message });
+      }
+      res.status(500).send("Something Broke!");
+    }
+  );
 
   server.all("*", (req, res) => {
     return handle(req, res);
