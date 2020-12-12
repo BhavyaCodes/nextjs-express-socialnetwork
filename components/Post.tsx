@@ -6,6 +6,8 @@ import { UserContext, SetUserContext } from "./context/user.context";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import IconButton from "@material-ui/core/IconButton";
 
+const baseImageUrl = process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_BASE_URL;
+
 interface Creator {
   name: string;
   _id: string;
@@ -29,6 +31,7 @@ export type PostType = {
   comments: Comment[];
   createdAt: Date;
   updatedAt: Date;
+  imageName?: string;
 };
 
 type AppProps = { post: PostType };
@@ -41,6 +44,9 @@ const Post: FC<AppProps> = (props: AppProps) => {
 
   const loggedInUser = useContext(UserContext);
   const setLoggedInUser = useContext(SetUserContext);
+
+  const baseImageUrl = process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE_BASE_URL;
+  console.log(baseImageUrl);
 
   const deletePost = async (id: string) => {
     try {
@@ -138,6 +144,12 @@ const Post: FC<AppProps> = (props: AppProps) => {
   return (
     <div>
       <h1>{post.title}</h1>
+      {post.imageName && (
+        <img
+          src={`${baseImageUrl}${post.imageName}`}
+          style={{ width: "30%" }}
+        />
+      )}
       <h3>{post.content}</h3>
       <Link href="/profile/[id]" as={`/profile/${post.creator._id}`}>
         <a>
