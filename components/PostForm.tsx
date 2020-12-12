@@ -8,6 +8,13 @@ function PostForm({ getPosts }) {
   const [fileError, setFileError] = useState("");
   const [previewSource, setPreviewSource] = useState(null);
 
+  const resetForm = () => {
+    setTitle("");
+    setContent("");
+    setSelectedFile(null);
+    setPreviewSource(null);
+  };
+
   const handlePostSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(title, content);
@@ -27,6 +34,7 @@ function PostForm({ getPosts }) {
           );
         },
       });
+      resetForm();
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -39,6 +47,10 @@ function PostForm({ getPosts }) {
     const file = event.target.files[0];
     setSelectedFile(file);
     console.log(file);
+    if (!file) {
+      setPreviewSource(null);
+      return;
+    }
     previewFile(file);
     if (file.size > 10485760) {
       setFileError("max file size is 10 mb");
@@ -47,12 +59,17 @@ function PostForm({ getPosts }) {
     }
   };
 
-  const previewFile = (file) => {
+  const previewFile = (file: Blob) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setPreviewSource(reader.result);
     };
+  };
+
+  const clearImage = () => {
+    setPreviewSource(null);
+    setSelectedFile(null);
   };
 
   return (
@@ -64,7 +81,10 @@ function PostForm({ getPosts }) {
         multiple={false}
       />
       {previewSource && (
-        <img src={previewSource} alt="chosen" style={{ width: "30%" }} />
+        <>
+          <img src={previewSource} alt="chosen" style={{ width: "30%" }} />
+          <button onClick={clearImage}>Remove image</button>
+        </>
       )}
       {fileError}
       <label htmlFor="title">Title</label>
