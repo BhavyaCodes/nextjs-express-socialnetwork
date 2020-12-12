@@ -32,7 +32,6 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback
 ) => {
-  const largeFileError = new Error();
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||

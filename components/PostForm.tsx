@@ -5,6 +5,7 @@ function PostForm({ getPosts }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
+  const [fileError, setFileError] = useState("");
 
   const handlePostSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,6 +40,11 @@ function PostForm({ getPosts }) {
     const file = event.target.files[0];
     setSelectedFile(file);
     console.log(file);
+    if (file.size > 10485760) {
+      setFileError("max file size is 10 mb");
+    } else {
+      setFileError("");
+    }
   };
 
   return (
@@ -49,6 +55,7 @@ function PostForm({ getPosts }) {
         onChange={fileChangedHandler}
         multiple={false}
       />
+      {fileError}
       <label htmlFor="title">Title</label>
       <input
         id="title"
