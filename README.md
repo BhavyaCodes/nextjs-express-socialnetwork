@@ -3,10 +3,13 @@
 - [x] Fix post on profile page
 - [x] Add Comment feature
 - [ ] style Post component
-- [ ] add image upload support
+- [x] add image upload support
 - [ ] share link for single post feature
 - [ ] remove extra information from api requests
 - [ ] refactor like/unlike to send only 1 request
+- [ ] add hashtags
+- [ ] pagination
+- [ ] add express validation
 
 ## Notes
 
