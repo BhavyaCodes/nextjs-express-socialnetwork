@@ -4,7 +4,6 @@ import axios from "axios";
 function PostForm({ getPosts }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  // const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [fileError, setFileError] = useState("");
   const [previewSource, setPreviewSource] = useState(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -12,7 +11,6 @@ function PostForm({ getPosts }) {
   const resetForm = () => {
     setTitle("");
     setContent("");
-    // setSelectedFile(null);
     fileRef.current.value = "";
     setPreviewSource(null);
   };
@@ -26,7 +24,7 @@ function PostForm({ getPosts }) {
       }
       fd.append("title", title);
       fd.append("content", content);
-      const res = await axios.post("/api/newpost", fd, {
+      await axios.post("/api/newpost", fd, {
         onUploadProgress: (progressEvent) => {
           console.log(
             `Upload Progress ${Math.round(
