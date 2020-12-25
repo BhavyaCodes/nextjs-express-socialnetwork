@@ -1,27 +1,33 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, useRef, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
 
 function PostForm({ getPosts }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [selectedFile, setSelectedFile] = useState<null | File>(null);
+  // const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const [fileError, setFileError] = useState("");
   const [previewSource, setPreviewSource] = useState(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const resetForm = () => {
     setTitle("");
     setContent("");
-    setSelectedFile(null);
+    // setSelectedFile(null);
+    fileRef.current.value = "";
     setPreviewSource(null);
   };
 
+  console.log(fileRef);
+  console.log(fileRef.current?.files[0]);
+
   const handlePostSubmit = async (e: FormEvent) => {
+    console.log("handlePostSubmit");
     e.preventDefault();
     console.log(title, content);
     try {
       const fd = new FormData();
-      if (selectedFile) {
-        fd.append("image", selectedFile);
+      if (fileRef.current?.files[0]) {
+        fd.append("image", fileRef.current?.files[0]);
       }
       fd.append("title", title);
       fd.append("content", content);
@@ -34,7 +40,7 @@ function PostForm({ getPosts }) {
           );
         },
       });
-      resetForm();
+      // resetForm();
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -44,8 +50,8 @@ function PostForm({ getPosts }) {
   };
 
   const fileChangedHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
+    const file = fileRef.current.files[0];
+    // setSelectedFile(file);
     console.log(file);
     if (!file) {
       setPreviewSource(null);
@@ -69,7 +75,7 @@ function PostForm({ getPosts }) {
 
   const clearImage = () => {
     setPreviewSource(null);
-    setSelectedFile(null);
+    // setSelectedFile(null);
   };
 
   return (
@@ -79,11 +85,14 @@ function PostForm({ getPosts }) {
         accept=".jpg,.jpeg,.png,.gif"
         onChange={fileChangedHandler}
         multiple={false}
+        ref={fileRef}
       />
       {previewSource && (
         <>
           <img src={previewSource} alt="chosen" style={{ width: "30%" }} />
-          <button onClick={clearImage}>Remove image</button>
+          <button type="button" onClick={clearImage}>
+            Remove image
+          </button>
         </>
       )}
       {fileError}
