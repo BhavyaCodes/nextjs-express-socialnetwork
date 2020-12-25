@@ -40,7 +40,7 @@ function PostForm({ getPosts }) {
           );
         },
       });
-      // resetForm();
+      resetForm();
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -51,7 +51,6 @@ function PostForm({ getPosts }) {
 
   const fileChangedHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const file = fileRef.current.files[0];
-    // setSelectedFile(file);
     console.log(file);
     if (!file) {
       setPreviewSource(null);
@@ -75,7 +74,7 @@ function PostForm({ getPosts }) {
 
   const clearImage = () => {
     setPreviewSource(null);
-    // setSelectedFile(null);
+    fileRef.current.value = "";
   };
 
   return (
