@@ -17,13 +17,8 @@ function PostForm({ getPosts }) {
     setPreviewSource(null);
   };
 
-  console.log(fileRef);
-  console.log(fileRef.current?.files[0]);
-
   const handlePostSubmit = async (e: FormEvent) => {
-    console.log("handlePostSubmit");
     e.preventDefault();
-    console.log(title, content);
     try {
       const fd = new FormData();
       if (fileRef.current?.files[0]) {
@@ -41,7 +36,6 @@ function PostForm({ getPosts }) {
         },
       });
       resetForm();
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +45,6 @@ function PostForm({ getPosts }) {
 
   const fileChangedHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const file = fileRef.current.files[0];
-    console.log(file);
     if (!file) {
       setPreviewSource(null);
       return;
