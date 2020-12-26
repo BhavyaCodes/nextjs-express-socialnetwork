@@ -17,4 +17,4 @@
 
 #### Body: 400 characters
 
-#### Comment: 150 characters
+#### Comment: max - 150 characters, min - 1 character
