@@ -13,8 +13,8 @@
 
 ## Post
 
-#### Title: 150 characters
+#### Title: max - 150 characters, min - 1 character
 
-#### Body: 400 characters
+#### Body: max - 400 characters, min - 1 character
 
 #### Comment: max - 150 characters, min - 1 character

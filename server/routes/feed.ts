@@ -20,18 +20,37 @@ router.post(
   "/newpost",
   requireLogin,
   imageUpload.single("image"),
+  // [
+  //   body("content")
+  //     .trim()
+  //     .isLength({ min: 1 })
+  //     .withMessage("Empty content")
+  //     .isLength({ max: 400 })
+  //     .withMessage("Content more than maximum allowed 400 characters"),
+  //   body("title")
+  //     .trim()
+  //     .isLength({ min: 1 })
+  //     .withMessage("Empty content")
+  //     .isLength({ max: 150 })
+  //     .withMessage("Title more than maximum allowed 150 characters"),
+  // ],
   createNewPost
 );
 
 router.post("/like", requireLogin, [body("postId").isMongoId()], likePost);
 
-router.post("/unlike", requireLogin, unlikePost);
+router.post("/unlike", requireLogin, [body("postId").isMongoId()], unlikePost);
 
 router.post(
   "/addcomment",
   requireLogin,
   [
-    body("content").trim().isLength({ min: 1, max: 150 }),
+    body("content")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Empty comment")
+      .isLength({ max: 150 })
+      .withMessage("Comment more than maximum allowed 150 characters"),
     body("postId").isMongoId(),
   ],
   addComment

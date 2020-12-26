@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 import Post from "../models/Post";
 import User from "../models/User";
 
@@ -123,6 +124,14 @@ export const addComment = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
+  errors.isEmpty();
+  console.log(errors);
   const userId: string = req.user._id;
   const { postId, content } = req.body;
   const comment: {
