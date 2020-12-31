@@ -50,9 +50,6 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
       errors: errors.array(),
     });
   }
-  // if (req.user.likes.includes(postId)) {
-  //   return res.status(409).json({ error: "already liked" });
-  // }
   const post = await Post.findById(postId);
   if (post.likes.includes(req.user._id)) {
     return res.status(409).json({ error: "already liked" });
@@ -78,9 +75,6 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
       })
       .execPopulate();
 
-    // await User.findByIdAndUpdate(req.user._id, {
-    //   $push: { likes: postId },
-    // });
     res.status(201).json(updatedPost);
   } catch (error) {
     console.log(error);
