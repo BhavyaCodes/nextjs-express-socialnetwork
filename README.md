@@ -9,7 +9,8 @@
 - [ ] refactor like/unlike to send only 1 request
 - [ ] add hashtags
 - [ ] pagination
-- [ ] add express validation
+- [x] add express validation
+- [x] update like schema
 
 ## Notes
 
