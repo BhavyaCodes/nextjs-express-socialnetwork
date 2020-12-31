@@ -44,6 +44,12 @@ export const createNewPost = async (
 
 export const likePost = async (req: any, res: Response, next: NextFunction) => {
   const { postId } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
   if (req.user.likes.includes(postId)) {
     return res.status(409).json({ error: "already liked" });
   }
@@ -83,6 +89,12 @@ export const unlikePost = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
   const { postId } = req.body;
   if (!req.user.likes.includes(postId)) {
     return res
@@ -130,8 +142,6 @@ export const addComment = async (
       errors: errors.array(),
     });
   }
-  errors.isEmpty();
-  console.log(errors);
   const userId: string = req.user._id;
   const { postId, content } = req.body;
   const comment: {
@@ -175,6 +185,12 @@ export const deleteComment = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
   const {
     postId,
     commentId,

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import requireLogin from "../middlewares/requireLogin";
 import imageUpload from "../middlewares/imageUpload";
 import {
@@ -59,10 +59,15 @@ router.post(
 router.post(
   "/deletecomment/:postId/:commentId",
   requireLogin,
-  [body("postId").isMongoId()],
+  [query("postId").isMongoId(), query("commentId").isMongoId()],
   deleteComment
 );
 
-router.delete("/deletepost/:id", requireLogin, deletePost);
+router.delete(
+  "/deletepost/:id",
+  requireLogin,
+  [query("id").isMongoId()],
+  deletePost
+);
 
 export default router;
