@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { query } from "express-validator";
 import { Types } from "mongoose";
 const router = Router();
 import passport from "passport";
