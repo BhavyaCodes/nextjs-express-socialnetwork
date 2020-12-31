@@ -10,7 +10,7 @@
 - [ ] add hashtags
 - [ ] pagination
 - [x] add express validation
-- [ ] update like schema
+- [x] update like schema
 
 ## Notes
 
