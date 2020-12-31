@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema, model } from "mongoose";
 
 export interface IUser extends Document {
-  name: string;
   googleId: string;
+  name: string;
   imageUrl: string;
   posts: (string | Schema.Types.ObjectId)[];
 }
@@ -25,12 +25,12 @@ const userSchema = new Schema({
       ref: "Post",
     },
   ],
-  likes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-  ],
+  // likes: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     ref: "Post",
+  //   },
+  // ],
 });
 
 export default model<IUser>("User", userSchema);
