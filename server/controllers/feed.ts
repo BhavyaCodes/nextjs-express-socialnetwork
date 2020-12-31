@@ -100,15 +100,7 @@ export const unlikePost = async (
     });
   }
   const { postId } = req.body;
-  if (!req.user.likes.includes(postId)) {
-    return res
-      .status(409)
-      .json({ error: "can't unlike a post that wasn't liked" });
-  }
   try {
-    await User.findByIdAndUpdate(req.user._id, {
-      $pull: { likes: postId },
-    });
     const updatedPost = await (
       await Post.findByIdAndUpdate(
         postId,
