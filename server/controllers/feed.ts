@@ -103,26 +103,30 @@ export const unlikePost = async (
   }
   const { postId } = req.body;
   try {
-    const updatedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $pull: { likes: req.user._id },
-          $inc: { likeCount: -1 },
-        },
-        { new: true }
+    const updatedPost = (
+      await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $pull: { likes: req.user._id },
+            $inc: { likeCount: -1 },
+          },
+          { new: true }
+        )
       )
-    )
-      .populate("creator")
-      .populate("likes")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "creator",
-        },
-      })
-      .execPopulate();
-    res.status(200).json(updatedPost);
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+        .execPopulate()
+    ).toObject();
+    res
+      .status(200)
+      .json({ ...updatedPost, likeCount: updatedPost.likes.length });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
