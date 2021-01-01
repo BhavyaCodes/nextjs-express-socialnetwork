@@ -19,7 +19,6 @@ export const getPosts = async (req: any, res: Response, next: NextFunction) => {
     const postsWithLikes = posts.map((post) => {
       return { ...post, likeCount: post.likes.length };
     });
-    console.log(postsWithLikes);
     if (!req.user) {
       return res.json({ posts: postsWithLikes });
     }
@@ -55,17 +54,13 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
     });
   }
   const post = await Post.findById(postId);
-  if (post.likes.includes(req.user._id)) {
-    return res.status(409).json({ error: "already liked" });
-  }
   try {
     const updatedPost = (
       await (
         await Post.findByIdAndUpdate(
           postId,
           {
-            $push: { likes: req.user._id },
-            $inc: { likeCount: 1 },
+            $addToSet: { likes: req.user._id },
           },
           { new: true }
         )
@@ -109,7 +104,6 @@ export const unlikePost = async (
           postId,
           {
             $pull: { likes: req.user._id },
-            $inc: { likeCount: -1 },
           },
           { new: true }
         )
