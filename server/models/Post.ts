@@ -54,11 +54,11 @@ const postSchema = new Schema(
       ref: "User",
       required: true,
     },
-    likeCount: {
-      type: Number,
-      default: 0,
-      required: true,
-    },
+    // likeCount: {
+    //   type: Number,
+    //   default: 0,
+    //   required: true,
+    // },
     likes: [
       {
         type: Schema.Types.ObjectId,
