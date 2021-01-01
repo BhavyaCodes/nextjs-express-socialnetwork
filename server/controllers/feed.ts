@@ -16,10 +16,13 @@ export const getPosts = async (req: any, res: Response, next: NextFunction) => {
       })
       .lean();
 
+    const postsWithLikes = posts.map((post) => {
+      return { ...post, likeCount: post.likes.length };
+    });
     if (!req.user) {
-      return res.json({ posts });
+      return res.json({ posts: postsWithLikes });
     }
-    res.json({ posts });
+    res.json({ posts: postsWithLikes });
   }
 };
 
@@ -51,31 +54,31 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
     });
   }
   const post = await Post.findById(postId);
-  if (post.likes.includes(req.user._id)) {
-    return res.status(409).json({ error: "already liked" });
-  }
   try {
-    const updatedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $push: { likes: req.user._id },
-          $inc: { likeCount: 1 },
-        },
-        { new: true }
+    const updatedPost = (
+      await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $addToSet: { likes: req.user._id },
+          },
+          { new: true }
+        )
       )
-    )
-      .populate("creator")
-      .populate("likes")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "creator",
-        },
-      })
-      .execPopulate();
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+        .execPopulate()
+    ).toObject();
 
-    res.status(201).json(updatedPost);
+    res
+      .status(201)
+      .json({ ...updatedPost, likeCount: updatedPost.likes.length });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -95,26 +98,29 @@ export const unlikePost = async (
   }
   const { postId } = req.body;
   try {
-    const updatedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $pull: { likes: req.user._id },
-          $inc: { likeCount: -1 },
-        },
-        { new: true }
+    const updatedPost = (
+      await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $pull: { likes: req.user._id },
+          },
+          { new: true }
+        )
       )
-    )
-      .populate("creator")
-      .populate("likes")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "creator",
-        },
-      })
-      .execPopulate();
-    res.status(200).json(updatedPost);
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+        .execPopulate()
+    ).toObject();
+    res
+      .status(200)
+      .json({ ...updatedPost, likeCount: updatedPost.likes.length });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
