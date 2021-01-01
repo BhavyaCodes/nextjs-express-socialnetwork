@@ -59,27 +59,31 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
     return res.status(409).json({ error: "already liked" });
   }
   try {
-    const updatedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $push: { likes: req.user._id },
-          $inc: { likeCount: 1 },
-        },
-        { new: true }
+    const updatedPost = (
+      await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $push: { likes: req.user._id },
+            $inc: { likeCount: 1 },
+          },
+          { new: true }
+        )
       )
-    )
-      .populate("creator")
-      .populate("likes")
-      .populate({
-        path: "comments",
-        populate: {
-          path: "creator",
-        },
-      })
-      .execPopulate();
+        .populate("creator")
+        .populate("likes")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "creator",
+          },
+        })
+        .execPopulate()
+    ).toObject();
 
-    res.status(201).json(updatedPost);
+    res
+      .status(201)
+      .json({ ...updatedPost, likeCount: updatedPost.likes.length });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
