@@ -16,10 +16,14 @@ export const getPosts = async (req: any, res: Response, next: NextFunction) => {
       })
       .lean();
 
+    const postsWithLikes = posts.map((post) => {
+      return { ...post, likeCount: post.likes.length };
+    });
+    console.log(postsWithLikes);
     if (!req.user) {
-      return res.json({ posts });
+      return res.json({ posts: postsWithLikes });
     }
-    res.json({ posts });
+    res.json({ posts: postsWithLikes });
   }
 };
 
