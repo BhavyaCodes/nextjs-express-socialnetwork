@@ -24,7 +24,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules", "server"
-  ]
+  "exclude": ["dist", ".next", "out", "next.config.js"],
 }
