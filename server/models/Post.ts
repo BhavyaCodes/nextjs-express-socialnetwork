@@ -5,7 +5,6 @@ export interface IPost extends Document {
   title: string;
   content: string;
   creator: string | Schema.Types.ObjectId;
-  likeCount: number;
   likes: Schema.Types.ObjectId[];
   comments: Types.Array<Comment>;
 }

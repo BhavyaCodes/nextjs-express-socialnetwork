@@ -23,7 +23,14 @@ export const getProfileById = async (
           },
         },
       })
-      .populate("likes");
+      .populate("likes")
+      .lean();
+
+    const posts = user.posts;
+    console.log(posts);
+    posts.forEach((post: any) => {
+      post.likeCount = post.likes.length;
+    });
     res.send(user);
   } catch (error) {
     console.log(error);
