@@ -19,12 +19,6 @@ const userSchema = new Schema({
   imageUrl: {
     type: String,
   },
-  posts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-  ],
 });
 
 export default model<IUser>("User", userSchema);
