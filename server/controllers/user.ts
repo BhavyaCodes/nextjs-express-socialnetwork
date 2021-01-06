@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User";
+import Post from "../models/Post";
 
 export const getProfileById = async (
   req: any,
@@ -7,31 +8,26 @@ export const getProfileById = async (
   next: NextFunction
 ) => {
   try {
-    const user = await User.findById(req.params.id)
+    const userPostsPromise = Post.find({ creator: req.params.id })
+      .populate("likes")
+      .populate("creator")
       .populate({
-        path: "posts",
+        path: "comments",
         populate: {
           path: "creator",
         },
-      })
-      .populate({
-        path: "posts",
-        populate: {
-          path: "comments",
-          populate: {
-            path: "creator",
-          },
-        },
-      })
-      .populate("likes")
-      .lean();
+      });
 
-    const posts = user.posts;
-    console.log(posts);
-    posts.forEach((post: any) => {
-      post.likeCount = post.likes.length;
+    const userPromise = User.findById(req.params.id).lean();
+    const [userPosts, user] = await Promise.all([
+      userPostsPromise,
+      userPromise,
+    ]);
+
+    const userPostsWithLikes = userPosts.map((post) => {
+      return { ...post.toObject(), likeCount: post.likes.length };
     });
-    res.send(user);
+    res.send({ ...user, posts: userPostsWithLikes });
   } catch (error) {
     console.log(error);
     res.status(404).send();

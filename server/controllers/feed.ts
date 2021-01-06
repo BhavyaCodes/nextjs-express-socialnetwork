@@ -39,9 +39,6 @@ export const createNewPost = async (
   });
 
   const savedPost = await post.save();
-  await User.findByIdAndUpdate(req.user._id, {
-    $push: { posts: savedPost._id },
-  });
   res.status(201).json({ post: savedPost });
 };
 
