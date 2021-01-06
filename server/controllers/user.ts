@@ -8,7 +8,7 @@ export const getProfileById = async (
   next: NextFunction
 ) => {
   try {
-    const userPosts = await Post.find({ creator: req.params.id })
+    const userPostsPromise = Post.find({ creator: req.params.id })
       .populate("likes")
       .populate("creator")
       .populate({
@@ -18,7 +18,11 @@ export const getProfileById = async (
         },
       });
 
-    const user = await User.findById(req.params.id).lean();
+    const userPromise = User.findById(req.params.id).lean();
+    const [userPosts, user] = await Promise.all([
+      userPostsPromise,
+      userPromise,
+    ]);
 
     const userPostsWithLikes = userPosts.map((post) => {
       return { ...post.toObject(), likeCount: post.likes.length };
