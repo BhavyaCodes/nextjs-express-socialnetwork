@@ -145,27 +145,32 @@ export const addComment = async (
     content,
   };
   try {
-    const savedPost = await (
-      await Post.findByIdAndUpdate(
-        postId,
-        {
-          $push: {
-            comments: comment,
+    const savedPost = (
+      await (
+        await Post.findByIdAndUpdate(
+          postId,
+          {
+            $push: {
+              comments: comment,
+            },
           },
-        },
-        { new: true }
-      )
-        .populate("creator")
-        .populate("likes")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "creator",
-          },
-        })
-    ).execPopulate();
+          { new: true }
+        )
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+      ).execPopulate()
+    ).toObject();
+    console.log(savedPost);
     if (savedPost) {
-      return res.status(201).json(savedPost);
+      return res
+        .status(201)
+        .json({ ...savedPost, likeCount: savedPost.likes.length });
     }
     res.status(404).json({ error: "unable to save" });
   } catch (error) {
@@ -195,17 +200,21 @@ export const deleteComment = async (
     if (req.user._id === post.creator || includes) {
       // permitted to delete
       post.comments.pull({ _id: commentId });
-      const savedPost = await (await post.save())
-        .populate("creator")
-        .populate("likes")
-        .populate({
-          path: "comments",
-          populate: {
-            path: "creator",
-          },
-        })
-        .execPopulate();
-      return res.status(200).json(savedPost);
+      const savedPost = (
+        await (await post.save())
+          .populate("creator")
+          .populate("likes")
+          .populate({
+            path: "comments",
+            populate: {
+              path: "creator",
+            },
+          })
+          .execPopulate()
+      ).toObject();
+      return res
+        .status(200)
+        .json({ ...savedPost, likeCount: savedPost.likes.length });
     } else {
       return res.status(401).send();
     }
