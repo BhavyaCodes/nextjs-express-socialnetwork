@@ -39,7 +39,7 @@ export const createNewPost = async (
     imageName: req.file ? req.file.filename : undefined,
   });
 
-  const savedPost = await post.save();
+  const savedPost = (await post.save()).toObject();
   res.status(201).json({ post: savedPost });
 };
 
