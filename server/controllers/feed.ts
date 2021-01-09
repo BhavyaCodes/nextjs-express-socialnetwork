@@ -6,12 +6,13 @@ import User from "../models/User";
 export const getPosts = async (req: any, res: Response, next: NextFunction) => {
   {
     const posts = await Post.find()
-      .populate("creator")
-      .populate("likes")
+      .populate("creator", ["imageUrl", "name"])
+      .populate("likes", ["imageUrl", "name"])
       .populate({
         path: "comments",
         populate: {
           path: "creator",
+          select: ["imageUrl", "name"],
         },
       })
       .lean();
