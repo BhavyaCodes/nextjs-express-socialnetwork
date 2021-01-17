@@ -6,12 +6,13 @@ import User from "../models/User";
 export const getPosts = async (req: any, res: Response, next: NextFunction) => {
   {
     const posts = await Post.find()
-      .populate("creator")
-      .populate("likes")
+      .populate("creator", ["imageUrl", "name"])
+      .populate("likes", ["imageUrl", "name"])
       .populate({
         path: "comments",
         populate: {
           path: "creator",
+          select: ["imageUrl", "name"],
         },
       })
       .lean();
@@ -38,7 +39,7 @@ export const createNewPost = async (
     imageName: req.file ? req.file.filename : undefined,
   });
 
-  const savedPost = await post.save();
+  const savedPost = (await post.save()).toObject();
   res.status(201).json({ post: savedPost });
 };
 
@@ -50,7 +51,7 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
       errors: errors.array(),
     });
   }
-  const post = await Post.findById(postId);
+
   try {
     const updatedPost = (
       await (
@@ -62,12 +63,19 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
           { new: true }
         )
       )
-        .populate("creator")
-        .populate("likes")
+        .populate({
+          path: "creator",
+          select: ["imageUrl", "name"],
+        })
+        .populate({
+          path: "likes",
+          select: ["imageUrl", "name"],
+        })
         .populate({
           path: "comments",
           populate: {
             path: "creator",
+            select: ["imageUrl", "name"],
           },
         })
         .execPopulate()
@@ -105,12 +113,19 @@ export const unlikePost = async (
           { new: true }
         )
       )
-        .populate("creator")
-        .populate("likes")
+        .populate({
+          path: "creator",
+          select: ["imageUrl", "name"],
+        })
+        .populate({
+          path: "likes",
+          select: ["imageUrl", "name"],
+        })
         .populate({
           path: "comments",
           populate: {
             path: "creator",
+            select: ["imageUrl", "name"],
           },
         })
         .execPopulate()
@@ -156,17 +171,23 @@ export const addComment = async (
           },
           { new: true }
         )
-          .populate("creator")
-          .populate("likes")
+          .populate({
+            path: "creator",
+            select: ["imageUrl", "name"],
+          })
+          .populate({
+            path: "likes",
+            select: ["imageUrl", "name"],
+          })
           .populate({
             path: "comments",
             populate: {
               path: "creator",
+              select: ["imageUrl", "name"],
             },
           })
       ).execPopulate()
     ).toObject();
-    console.log(savedPost);
     if (savedPost) {
       return res
         .status(201)
@@ -202,12 +223,19 @@ export const deleteComment = async (
       post.comments.pull({ _id: commentId });
       const savedPost = (
         await (await post.save())
-          .populate("creator")
-          .populate("likes")
+          .populate({
+            path: "creator",
+            select: ["imageUrl", "name"],
+          })
+          .populate({
+            path: "likes",
+            select: ["imageUrl", "name"],
+          })
           .populate({
             path: "comments",
             populate: {
               path: "creator",
+              select: ["imageUrl", "name"],
             },
           })
           .execPopulate()
