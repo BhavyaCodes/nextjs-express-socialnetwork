@@ -113,12 +113,19 @@ export const unlikePost = async (
           { new: true }
         )
       )
-        .populate("creator")
-        .populate("likes")
+        .populate({
+          path: "creator",
+          select: ["imageUrl", "name"],
+        })
+        .populate({
+          path: "likes",
+          select: ["imageUrl", "name"],
+        })
         .populate({
           path: "comments",
           populate: {
             path: "creator",
+            select: ["imageUrl", "name"],
           },
         })
         .execPopulate()
