@@ -51,7 +51,7 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
       errors: errors.array(),
     });
   }
-  const post = await Post.findById(postId);
+
   try {
     const updatedPost = (
       await (
@@ -63,12 +63,19 @@ export const likePost = async (req: any, res: Response, next: NextFunction) => {
           { new: true }
         )
       )
-        .populate("creator")
-        .populate("likes")
+        .populate({
+          path: "creator",
+          select: ["imageUrl", "name"],
+        })
+        .populate({
+          path: "likes",
+          select: ["imageUrl", "name"],
+        })
         .populate({
           path: "comments",
           populate: {
             path: "creator",
+            select: ["imageUrl", "name"],
           },
         })
         .execPopulate()
