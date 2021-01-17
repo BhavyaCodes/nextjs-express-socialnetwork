@@ -9,16 +9,20 @@ export const getProfileById = async (
 ) => {
   try {
     const userPostsPromise = Post.find({ creator: req.params.id })
-      .populate("likes")
-      .populate("creator")
+      .populate("creator", ["imageUrl", "name"])
+      .populate("likes", ["imageUrl", "name"])
       .populate({
         path: "comments",
         populate: {
           path: "creator",
+          select: ["imageUrl", "name"],
         },
       });
 
-    const userPromise = User.findById(req.params.id).lean();
+    const userPromise = User.findById(req.params.id, {
+      name: 1,
+      imageUrl: 1,
+    }).lean();
     const [userPosts, user] = await Promise.all([
       userPostsPromise,
       userPromise,
