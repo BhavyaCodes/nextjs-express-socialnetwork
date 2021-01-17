@@ -223,12 +223,19 @@ export const deleteComment = async (
       post.comments.pull({ _id: commentId });
       const savedPost = (
         await (await post.save())
-          .populate("creator")
-          .populate("likes")
+          .populate({
+            path: "creator",
+            select: ["imageUrl", "name"],
+          })
+          .populate({
+            path: "likes",
+            select: ["imageUrl", "name"],
+          })
           .populate({
             path: "comments",
             populate: {
               path: "creator",
+              select: ["imageUrl", "name"],
             },
           })
           .execPopulate()
